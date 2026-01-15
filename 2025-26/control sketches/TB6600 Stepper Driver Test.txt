@@ -1,0 +1,30 @@
+// TB6600 Stepper Driver Test
+// Direction: Pin 27
+// Pulse: Pin 14
+
+const int dirPin = 27;     // Direction pin
+const int pulsePin = 14;   // Pulse pin
+
+// Adjustable parameters
+const long pulsesPerRev = 6400; // Change if your microstepping setting changes
+int pulseDelay = 200;           // Microseconds (Lower = Faster speed)
+
+void setup() {
+  pinMode(dirPin, OUTPUT);
+  pinMode(pulsePin, OUTPUT);
+
+  // Set direction once in setup
+  // HIGH for one way, LOW for the other
+  digitalWrite(dirPin, LOW); 
+}
+
+void loop() {
+  // Move continuously in the direction set above
+  digitalWrite(pulsePin, HIGH);
+  delayMicroseconds(pulseDelay);
+  digitalWrite(pulsePin, LOW);
+  delayMicroseconds(pulseDelay);
+  
+  // Note: I removed the 'for' loop and 'delay(500)' 
+  // so the motor spins smoothly without pausing.
+}

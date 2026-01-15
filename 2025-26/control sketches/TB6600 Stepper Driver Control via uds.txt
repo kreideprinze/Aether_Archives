@@ -1,0 +1,54 @@
+// TB6600 Stepper Driver Control via Serial
+// Direction: Pin 27 | Pulse: Pin 14
+
+const int dirPin = 27;     // Direction pin
+const int pulsePin = 14;   // Pulse pin
+
+// Adjustable parameters
+const long pulsesPerRev = 6400; 
+int pulseDelay = 200;           // Speed (Lower = Faster)
+
+// State variables
+char command = 's';             // Start in 'stop' state
+
+void setup() {
+  Serial.begin(115200);         // Initialize Serial Communication
+  pinMode(dirPin, OUTPUT);
+  pinMode(pulsePin, OUTPUT);
+
+  Serial.println("Motor Ready. Use Serial Monitor:");
+  Serial.println("'u' = Up (CW), 'd' = Down (CCW), 's' = Stop");
+}
+
+void loop() {
+  // 1. Check if a new keyboard command was sent
+  if (Serial.available() > 0) {
+    char incomingChar = Serial.read();
+    
+    // Filter out newline or carriage return characters
+    if (incomingChar == 'u' || incomingChar == 'd' || incomingChar == 's') {
+      command = incomingChar;
+    }
+  }
+
+  // 2. Control Motor based on the current command
+  if (command == 'u') {
+    digitalWrite(dirPin, HIGH); // Set Direction CW
+    stepMotor();
+  } 
+  else if (command == 'd') {
+    digitalWrite(dirPin, LOW);  // Set Direction CCW
+    stepMotor();
+  } 
+  else {
+    // If command is 's', do nothing (motor stays still)
+  }
+}
+
+// Function to generate a single pulse
+void stepMotor() {
+  digitalWrite(pulsePin, HIGH);
+  delayMicroseconds(pulseDelay);
+  digitalWrite(pulsePin, LOW);
+  delayMicroseconds(pulseDelay);
+}
